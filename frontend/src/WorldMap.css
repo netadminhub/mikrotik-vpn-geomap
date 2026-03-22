@@ -1,0 +1,15 @@
+.map-wrapper {
+  width: 100%;
+}
+
+.map-container {
+  background-color: var(--bg-secondary);
+  border-radius: 12px;
+  padding: 1.5rem;
+  border: 1px solid var(--border-color);
+}
+
+#world-map {
+  width: 100%;
+  height: 500px;
+}
