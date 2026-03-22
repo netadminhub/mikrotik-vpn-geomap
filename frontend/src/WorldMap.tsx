@@ -72,7 +72,19 @@ export default function WorldMap() {
   const fetchData = async () => {
     try {
       setLoading(true);
-      const res = await fetch('/api/current');
+      const token = localStorage.getItem('token');
+      const res = await fetch('/api/current', {
+        headers: {
+          'Authorization': `Bearer ${token}`,
+        },
+      });
+      
+      if (res.status === 401) {
+        localStorage.removeItem('token');
+        window.location.reload();
+        return;
+      }
+      
       const result = await res.json();
       setData(result);
       setError(null);

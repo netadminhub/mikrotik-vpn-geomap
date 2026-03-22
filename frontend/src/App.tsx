@@ -1,4 +1,5 @@
 import { useState, useEffect } from 'react';
+import LoginPage from './LoginPage';
 import WorldMap from './WorldMap';
 import ReportTable from './ReportTable';
 import './App.css';
@@ -12,6 +13,7 @@ interface Status {
 }
 
 function App() {
+  const [isAuthenticated, setIsAuthenticated] = useState(false);
   const [activeTab, setActiveTab] = useState<Tab>('map');
   const [status, setStatus] = useState<Status | null>(null);
   const [reportPeriod, setReportPeriod] = useState<ReportPeriod>('daily');
@@ -19,10 +21,20 @@ function App() {
   const [endDate, setEndDate] = useState('');
 
   useEffect(() => {
-    fetchStatus();
-    const interval = setInterval(fetchStatus, 30000);
-    return () => clearInterval(interval);
+    // Check if user is already logged in
+    const token = localStorage.getItem('token');
+    if (token) {
+      setIsAuthenticated(true);
+    }
   }, []);
+
+  useEffect(() => {
+    if (isAuthenticated) {
+      fetchStatus();
+      const interval = setInterval(fetchStatus, 30000);
+      return () => clearInterval(interval);
+    }
+  }, [isAuthenticated]);
 
   const fetchStatus = async () => {
     try {
@@ -34,13 +46,31 @@ function App() {
     }
   };
 
+  const handleLogin = (token: string) => {
+    setIsAuthenticated(true);
+  };
+
+  const handleLogout = () => {
+    localStorage.removeItem('token');
+    setIsAuthenticated(false);
+  };
+
+  if (!isAuthenticated) {
+    return <LoginPage onLogin={handleLogin} />;
+  }
+
   return (
     <div className="app">
       <header className="header">
         <h1>🌍 MikroTik Geo VPN</h1>
-        <div className={`status-indicator ${status?.connected ? 'connected' : 'disconnected'}`}>
-          <span className={`status-dot ${status?.connected ? 'connected' : 'disconnected'}`}></span>
-          <span>{status?.connected ? `Connected to ${status.host}` : 'Disconnected'}</span>
+        <div style={{ display: 'flex', alignItems: 'center', gap: '1rem' }}>
+          <div className={`status-indicator ${status?.connected ? 'connected' : 'disconnected'}`}>
+            <span className={`status-dot ${status?.connected ? 'connected' : 'disconnected'}`}></span>
+            <span>{status?.connected ? `Connected` : 'Disconnected'}</span>
+          </div>
+          <button className="logout-button" onClick={handleLogout}>
+            Logout
+          </button>
         </div>
       </header>
 

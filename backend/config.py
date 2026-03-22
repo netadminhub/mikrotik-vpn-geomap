@@ -14,14 +14,22 @@ class Settings(BaseSettings):
     mikrotik_use_ssl: bool = False
     
     # Polling
-    poll_interval_seconds: int = 60
+    poll_interval_seconds: int = 30
     
     # GeoIP
     geoip_api_url: str = "http://ip-api.com/json"
     
+    # Authentication
+    admin_username: str = "admin"
+    admin_password: str = "admin123"
+    jwt_secret_key: str = "your-secret-key-change-in-production"
+    jwt_algorithm: str = "HS256"
+    jwt_expiration_minutes: int = 1440  # 24 hours
+    
     class Config:
         env_file = ".env"
         case_sensitive = False
+        extra = "ignore"
 
 
 settings = Settings()

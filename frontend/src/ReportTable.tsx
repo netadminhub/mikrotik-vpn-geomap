@@ -49,6 +49,7 @@ export default function ReportTable({
       setLoading(true);
       setError(null);
 
+      const token = localStorage.getItem('token');
       let url = '/api/report?';
       if (period !== 'custom') {
         url += `period=${period}`;
@@ -56,7 +57,18 @@ export default function ReportTable({
         url += `start_date=${startDate}&end_date=${endDate}`;
       }
 
-      const res = await fetch(url);
+      const res = await fetch(url, {
+        headers: {
+          'Authorization': `Bearer ${token}`,
+        },
+      });
+      
+      if (res.status === 401) {
+        localStorage.removeItem('token');
+        window.location.reload();
+        return;
+      }
+      
       const result = await res.json();
       setReportData(result.report || []);
     } catch (err) {

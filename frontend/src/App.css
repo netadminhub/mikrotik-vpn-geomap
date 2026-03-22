@@ -1,1 +1,18 @@
 /* App specific styles */
+
+.logout-button {
+  padding: 0.5rem 1rem;
+  border: 1px solid var(--border-color);
+  background-color: var(--bg-tertiary);
+  color: var(--text-primary);
+  border-radius: 6px;
+  cursor: pointer;
+  font-size: 0.875rem;
+  transition: all 0.2s;
+}
+
+.logout-button:hover {
+  background-color: var(--accent-red);
+  border-color: var(--accent-red);
+  color: white;
+}

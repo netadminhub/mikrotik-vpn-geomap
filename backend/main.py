@@ -1,4 +1,4 @@
-from fastapi import FastAPI, Depends, HTTPException
+from fastapi import FastAPI, Depends, HTTPException, status
 from fastapi.middleware.cors import CORSMiddleware
 from sqlalchemy.orm import Session
 from sqlalchemy import func, and_, extract
@@ -6,11 +6,13 @@ from datetime import datetime, date, timedelta
 from typing import List, Optional
 from contextlib import asynccontextmanager
 import asyncio
+from pydantic import BaseModel
 
 from config import settings
 from database import init_db, SessionLocal, PPPSession, CountrySnapshot
 from scheduler import start_scheduler, initial_poll
 from mikrotik_client import mikrotik_client
+from auth import authenticate_user, create_access_token, get_current_user, ACCESS_TOKEN_EXPIRE_MINUTES
 
 
 @asynccontextmanager
@@ -44,6 +46,33 @@ def get_db():
         db.close()
 
 
+class LoginRequest(BaseModel):
+    username: str
+    password: str
+
+
+class Token(BaseModel):
+    access_token: str
+    token_type: str = "bearer"
+
+
+@app.post("/api/login", response_model=Token)
+def login(request: LoginRequest):
+    """Login and get JWT access token"""
+    if not authenticate_user(request.username, request.password):
+        raise HTTPException(
+            status_code=status.HTTP_401_UNAUTHORIZED,
+            detail="Incorrect username or password",
+            headers={"WWW-Authenticate": "Bearer"},
+        )
+    
+    access_token = create_access_token(
+        data={"sub": request.username}
+    )
+    
+    return {"access_token": access_token, "token_type": "bearer"}
+
+
 @app.get("/api/status")
 def get_status():
     """Get MikroTik connection status"""
@@ -52,7 +81,10 @@ def get_status():
 
 
 @app.get("/api/current")
-def get_current_users(db: Session = Depends(get_db)):
+def get_current_users(
+    db: Session = Depends(get_db),
+    current_user: str = Depends(get_current_user)
+):
     """Get current online users by country (latest snapshot)"""
     # Get the latest snapshot time
     latest = db.query(func.max(CountrySnapshot.snapshot_time)).scalar()
@@ -102,7 +134,8 @@ def get_current_users(db: Session = Depends(get_db)):
 @app.get("/api/history")
 def get_history(
     days: int = 7,
-    db: Session = Depends(get_db)
+    db: Session = Depends(get_db),
+    current_user: str = Depends(get_current_user)
 ):
     """Get historical data for the past N days"""
     cutoff = datetime.utcnow() - timedelta(days=days)
@@ -141,7 +174,8 @@ def get_report(
     start_date: Optional[str] = None,
     end_date: Optional[str] = None,
     period: Optional[str] = None,
-    db: Session = Depends(get_db)
+    db: Session = Depends(get_db),
+    current_user: str = Depends(get_current_user)
 ):
     """Get custom report with date range"""
     query = db.query(
@@ -203,7 +237,8 @@ def get_report(
 @app.get("/api/sessions")
 def get_sessions(
     limit: int = 100,
-    db: Session = Depends(get_db)
+    db: Session = Depends(get_db),
+    current_user: str = Depends(get_current_user)
 ):
     """Get recent PPP sessions"""
     sessions = db.query(PPPSession).order_by(
