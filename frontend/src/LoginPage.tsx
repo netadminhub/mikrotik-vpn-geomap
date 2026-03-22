@@ -25,6 +25,15 @@ export default function LoginPage({ onLogin }: LoginPageProps) {
         body: JSON.stringify({ username, password }),
       });
 
+      const contentType = response.headers.get('content-type');
+      
+      // Check if response is JSON
+      if (!contentType || !contentType.includes('application/json')) {
+        const text = await response.text();
+        console.error('Non-JSON response:', text.substring(0, 200));
+        throw new Error('Server returned HTML instead of JSON. Check backend connection.');
+      }
+
       const data = await response.json();
 
       if (!response.ok) {
@@ -35,6 +44,7 @@ export default function LoginPage({ onLogin }: LoginPageProps) {
       localStorage.setItem('token', data.access_token);
       onLogin(data.access_token);
     } catch (err: any) {
+      console.error('Login error:', err);
       setError(err.message || 'Login failed. Please try again.');
     } finally {
       setLoading(false);
