@@ -6,9 +6,9 @@ type ReportPeriod = 'daily' | 'monthly' | 'yearly' | 'custom';
 interface ReportData {
   country: string;
   country_code: string;
-  total_users: number;
-  record_count: number;
+  max_users: number;
   avg_users: number;
+  sample_count: number;
 }
 
 interface ReportTableProps {
@@ -137,9 +137,9 @@ export default function ReportTable({
             <thead>
               <tr>
                 <th>Country</th>
-                <th className="number">Total Users</th>
-                <th className="number">Records</th>
+                <th className="number">Max Users</th>
                 <th className="number">Avg Users</th>
+                <th className="number">Samples</th>
               </tr>
             </thead>
             <tbody>
@@ -156,9 +156,9 @@ export default function ReportTable({
                       <span className="country-flag">{countryCodeToFlag(row.country_code)}</span>
                       {row.country}
                     </td>
-                    <td className="number">{row.total_users.toLocaleString()}</td>
-                    <td className="number">{row.record_count.toLocaleString()}</td>
+                    <td className="number">{row.max_users.toLocaleString()}</td>
                     <td className="number">{row.avg_users.toFixed(2)}</td>
+                    <td className="number">{row.sample_count.toLocaleString()}</td>
                   </tr>
                 ))
               )}

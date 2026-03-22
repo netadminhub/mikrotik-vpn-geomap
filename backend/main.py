@@ -129,9 +129,9 @@ def get_report(
     query = db.query(
         CountrySnapshot.country,
         CountrySnapshot.country_code,
-        func.sum(CountrySnapshot.user_count).label("total_users"),
-        func.count(CountrySnapshot.id).label("record_count"),
-        func.avg(CountrySnapshot.user_count).label("avg_users")
+        func.max(CountrySnapshot.user_count).label("max_users"),
+        func.avg(CountrySnapshot.user_count).label("avg_users"),
+        func.count(func.distinct(CountrySnapshot.snapshot_time)).label("sample_count")
     )
     
     if period == "daily":
@@ -165,7 +165,7 @@ def get_report(
         CountrySnapshot.country,
         CountrySnapshot.country_code
     ).order_by(
-        func.sum(CountrySnapshot.user_count).desc()
+        func.max(CountrySnapshot.user_count).desc()
     ).all()
     
     return {
@@ -173,9 +173,9 @@ def get_report(
             {
                 "country": r.country,
                 "country_code": r.country_code,
-                "total_users": r.total_users,
-                "record_count": r.record_count,
-                "avg_users": float(r.avg_users) if r.avg_users else 0
+                "max_users": r.max_users,
+                "avg_users": float(r.avg_users) if r.avg_users else 0,
+                "sample_count": r.sample_count
             }
             for r in results
         ]
