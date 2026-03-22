@@ -58,12 +58,29 @@ def get_current_users(db: Session = Depends(get_db)):
     latest = db.query(func.max(CountrySnapshot.snapshot_time)).scalar()
     
     if not latest:
-        return {"countries": [], "total_users": 0, "timestamp": None}
+        return {"countries": [], "total_users": 0, "timestamp": None, "users_by_country": {}}
     
     # Get all countries from that time
     snapshots = db.query(CountrySnapshot).filter(
         CountrySnapshot.snapshot_time == latest
     ).all()
+    
+    # Get latest PPP sessions with user names
+    latest_sessions = db.query(PPPSession).filter(
+        PPPSession.recorded_at == latest
+    ).all()
+    
+    # Group users by country
+    users_by_country = {}
+    for session in latest_sessions:
+        country = session.country or "Unknown"
+        if country not in users_by_country:
+            users_by_country[country] = []
+        users_by_country[country].append({
+            "name": session.name,
+            "caller_id": session.caller_id,
+            "uptime": session.uptime
+        })
     
     countries = [
         {
@@ -77,7 +94,8 @@ def get_current_users(db: Session = Depends(get_db)):
     return {
         "countries": countries,
         "total_users": sum(s.user_count for s in snapshots),
-        "timestamp": latest.isoformat()
+        "timestamp": latest.isoformat(),
+        "users_by_country": users_by_country
     }
 
 

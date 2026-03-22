@@ -22,10 +22,17 @@ interface CountryData {
   user_count: number;
 }
 
+interface UserInfo {
+  name: string;
+  caller_id: string;
+  uptime: string;
+}
+
 interface CurrentData {
   countries: CountryData[];
   total_users: number;
   timestamp: string | null;
+  users_by_country: Record<string, UserInfo[]>;
 }
 
 export default function WorldMap() {
@@ -41,7 +48,8 @@ export default function WorldMap() {
       fetchData();
     }
     init();
-    const interval = setInterval(fetchData, 60000);
+    // Poll every 30 seconds for live updates
+    const interval = setInterval(fetchData, 30000);
     return () => clearInterval(interval);
   }, []);
 
@@ -103,7 +111,29 @@ export default function WorldMap() {
       tooltip: {
         trigger: 'item',
         formatter: (params: any) => {
-          return `${params.name}<br/>Users: ${params.value || 0}`;
+          const countryName = params.name;
+          const userCount = params.value || 0;
+          const users = data.users_by_country[countryName] || [];
+          
+          let tooltip = `<div style="padding: 8px;">
+            <div style="font-weight: bold; margin-bottom: 8px; font-size: 14px;">${countryName}</div>
+            <div style="color: #58a6ff; margin-bottom: 8px;">👥 ${userCount} Users</div>`;
+          
+          if (users.length > 0) {
+            tooltip += `<div style="border-top: 1px solid #30363d; padding-top: 8px;">`;
+            users.forEach((user: UserInfo) => {
+              tooltip += `<div style="margin-bottom: 6px; font-size: 12px;">
+                <div style="color: #f0f6fc;">👤 ${user.name}</div>
+                <div style="color: #8b949e; font-size: 11px; margin-left: 16px;">
+                  📍 ${user.caller_id} • ⏱ ${user.uptime}
+                </div>
+              </div>`;
+            });
+            tooltip += `</div>`;
+          }
+          
+          tooltip += `</div>`;
+          return tooltip;
         },
         backgroundColor: '#161b22',
         borderColor: '#30363d',
@@ -153,7 +183,7 @@ export default function WorldMap() {
       ],
     };
 
-    chart.setOption(option);
+    chart.setOption(option, { notMerge: false });
   };
 
   if (loading && !data) {
