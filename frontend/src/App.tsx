@@ -46,7 +46,7 @@ function App() {
     }
   };
 
-  const handleLogin = (token: string) => {
+  const handleLogin = () => {
     setIsAuthenticated(true);
   };
 
