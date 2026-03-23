@@ -41,6 +41,9 @@ export default function WorldMap() {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
   const chartInstance = useRef<echarts.ECharts | null>(null);
+  const [selectedCountry, setSelectedCountry] = useState<string | null>(null);
+  const [selectedCountryUsers, setSelectedCountryUsers] = useState<UserInfo[]>([]);
+  const [sidebarOpen, setSidebarOpen] = useState(false);
 
   useEffect(() => {
     async function init() {
@@ -125,27 +128,11 @@ export default function WorldMap() {
         formatter: (params: any) => {
           const countryName = params.name;
           const userCount = params.value || 0;
-          const users = data.users_by_country[countryName] || [];
-          
-          let tooltip = `<div style="padding: 8px;">
-            <div style="font-weight: bold; margin-bottom: 8px; font-size: 14px;">${countryName}</div>
-            <div style="color: #58a6ff; margin-bottom: 8px;">👥 ${userCount} Users</div>`;
-          
-          if (users.length > 0) {
-            tooltip += `<div style="border-top: 1px solid #30363d; padding-top: 8px;">`;
-            users.forEach((user: UserInfo) => {
-              tooltip += `<div style="margin-bottom: 6px; font-size: 12px;">
-                <div style="color: #f0f6fc;">👤 ${user.name}</div>
-                <div style="color: #8b949e; font-size: 11px; margin-left: 16px;">
-                  📍 ${user.caller_id} • ⏱ ${user.uptime}
-                </div>
-              </div>`;
-            });
-            tooltip += `</div>`;
-          }
-          
-          tooltip += `</div>`;
-          return tooltip;
+          return `<div style="padding: 12px 16px;">
+            <div style="font-weight: bold; margin-bottom: 4px; font-size: 14px;">${countryName}</div>
+            <div style="color: #58a6ff; font-size: 13px;">👥 ${userCount} ${userCount === 1 ? 'User' : 'Users'}</div>
+            <div style="color: #8b949e; font-size: 11px; margin-top: 6px;">Click to view details</div>
+          </div>`;
         },
         backgroundColor: '#161b22',
         borderColor: '#30363d',
@@ -196,6 +183,18 @@ export default function WorldMap() {
     };
 
     chart.setOption(option, { notMerge: false });
+
+    // Click event handler for country selection
+    chart.off('click');
+    chart.on('click', (params: any) => {
+      if (params.componentType === 'series') {
+        const countryName = params.name;
+        const users = data.users_by_country[countryName] || [];
+        setSelectedCountry(countryName);
+        setSelectedCountryUsers(users);
+        setSidebarOpen(true);
+      }
+    });
   };
 
   if (loading && !data) {
@@ -220,6 +219,47 @@ export default function WorldMap() {
       </div>
       <div className="map-container">
         <div id="world-map" ref={mapRef}></div>
+      </div>
+
+      {/* Country Details Sidebar */}
+      <div className={`sidebar-overlay ${sidebarOpen ? 'open' : ''}`} onClick={() => setSidebarOpen(false)}></div>
+      <div className={`country-sidebar ${sidebarOpen ? 'open' : ''}`}>
+        <div className="sidebar-header">
+          <h2>{selectedCountry || 'Country Details'}</h2>
+          <button className="close-sidebar" onClick={() => setSidebarOpen(false)}>
+            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+              <path d="M18 6L6 18M6 6l12 12" />
+            </svg>
+          </button>
+        </div>
+        <div className="sidebar-content">
+          <div className="user-count">
+            <span className="count-number">{selectedCountryUsers.length}</span>
+            <span className="count-label">{selectedCountryUsers.length === 1 ? 'User' : 'Users'}</span>
+          </div>
+          {selectedCountryUsers.length > 0 ? (
+            <div className="users-list">
+              {selectedCountryUsers.map((user, index) => (
+                <div key={index} className="user-card">
+                  <div className="user-avatar">
+                    {user.name.charAt(0).toUpperCase()}
+                  </div>
+                  <div className="user-info">
+                    <div className="user-name">{user.name}</div>
+                    <div className="user-details">
+                      <span className="caller-id">📍 {user.caller_id}</span>
+                      <span className="uptime">⏱ {user.uptime}</span>
+                    </div>
+                  </div>
+                </div>
+              ))}
+            </div>
+          ) : (
+            <div className="no-users">
+              <p>No users currently online from this country</p>
+            </div>
+          )}
+        </div>
       </div>
     </div>
   );
