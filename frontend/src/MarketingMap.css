@@ -292,8 +292,8 @@
   }
 
   .marketing-map-wrapper {
-    padding: 0.4rem 0.75rem 0 0.75rem;
-    gap: 0.4rem;
+    padding: 0.3rem 0.75rem 0 0.75rem;
+    gap: 0.35rem;
     min-height: 100dvh;
     min-height: 100vh;
     display: flex;
@@ -306,52 +306,52 @@
   }
 
   .marketing-header h1 {
-    font-size: 1.05rem;
-    line-height: 1.3;
+    font-size: 1rem;
+    line-height: 1.25;
     word-break: keep-all;
     hyphens: none;
   }
 
   .marketing-subtitle {
-    font-size: 0.75rem;
-    margin-top: 0.15rem;
+    font-size: 0.7rem;
+    margin-top: 0.1rem;
   }
 
   .features-compact {
-    gap: 0.3rem;
-    margin-top: 0.2rem;
+    gap: 0.25rem;
+    margin-top: 0.15rem;
     flex-shrink: 0;
   }
 
   .feature-item {
-    padding: 0.25rem 0.5rem;
-    font-size: 0.65rem;
+    padding: 0.22rem 0.45rem;
+    font-size: 0.62rem;
   }
 
   .feature-emoji {
-    font-size: 0.75rem;
+    font-size: 0.7rem;
   }
 
   .map-container {
     padding: 0;
     margin: 0;
     flex-shrink: 0;
-    height: 180px;
+    height: 160px;
   }
 
   #marketing-world-map {
-    height: 180px;
+    height: 160px;
   }
 
   .live-stats {
     flex-direction: row;
     justify-content: space-between;
-    padding: 0.4rem 0.7rem;
+    padding: 0.35rem 0.7rem;
     flex-shrink: 0;
   }
 
   .live-indicator {
-    font-size: 0.6rem;
+    font-size: 0.58rem;
   }
 
   .pulse-dot {
@@ -364,44 +364,44 @@
   }
 
   .stat-number {
-    font-size: 0.9rem;
+    font-size: 0.85rem;
   }
 
   .stat-label {
-    font-size: 0.55rem;
+    font-size: 0.52rem;
   }
 
   /* Footer pushed to bottom with auto margin */
   .marketing-footer {
-    padding: 0.35rem 0.75rem 0.15rem 0.75rem;
+    padding: 0.3rem 0.75rem 0.1rem 0.75rem;
     margin-top: auto;
     flex-shrink: 0;
   }
 
   .footer-content {
-    gap: 0.4rem;
+    gap: 0.35rem;
   }
 
   .footer-tagline {
-    font-size: 0.65rem;
+    font-size: 0.62rem;
   }
 
   .footer-contact {
-    font-size: 0.7rem;
+    font-size: 0.68rem;
   }
 
   .social-links {
-    gap: 0.3rem;
-    margin-top: 0.2rem;
+    gap: 0.25rem;
+    margin-top: 0.15rem;
   }
 
   .social-link {
-    width: 28px;
-    height: 28px;
+    width: 26px;
+    height: 26px;
   }
 
   .social-link svg {
-    width: 14px;
-    height: 14px;
+    width: 13px;
+    height: 13px;
   }
 }
