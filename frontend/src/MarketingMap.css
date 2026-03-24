@@ -63,6 +63,7 @@
   font-size: 0.95rem;
 }
 
+/* Desktop map: fixed height */
 .map-container {
   flex: 1;
   min-height: 420px;
@@ -78,7 +79,6 @@
   width: 100%;
   height: 100%;
   min-height: 420px;
-  max-height: 420px;
 }
 
 .live-stats {
@@ -114,14 +114,8 @@
 }
 
 @keyframes pulse {
-  0%, 100% {
-    opacity: 1;
-    transform: scale(1);
-  }
-  50% {
-    opacity: 0.5;
-    transform: scale(1.2);
-  }
+  0%, 100% { opacity: 1; transform: scale(1); }
+  50% { opacity: 0.5; transform: scale(1.2); }
 }
 
 .stat-text {
@@ -264,9 +258,7 @@
 }
 
 @keyframes spin {
-  to {
-    transform: rotate(360deg);
-  }
+  to { transform: rotate(360deg); }
 }
 
 .error {
@@ -284,33 +276,34 @@
 
 /* ============================================================
    MOBILE — max-width: 768px
-   Strategy: wrapper is exactly 100dvh tall (hard ceiling).
-   The map-container is the only flex-grow element, so it
-   absorbs all leftover space. The footer naturally lands at
-   the bottom with no empty space below it.
+
+   Two-part contract to defeat the ECharts fixed-canvas problem:
+
+   CSS: wrapper = exactly 100dvh, map-container = flex:1 + min-height:0,
+        #marketing-world-map = 100%/100% with no pixel constraints.
+
+   JS (MarketingMap.tsx): ResizeObserver on the map div calls
+        chart.resize() the moment flexbox assigns its final height.
+        chart.resize() is also called right after setOption().
    ============================================================ */
 @media (max-width: 768px) {
-  /* Lock the root chain to the viewport height */
   html, body, #root {
     height: 100%;
     margin: 0;
     padding: 0;
-    overflow: hidden; /* prevent body-level scroll */
+    overflow: hidden;
   }
 
-  /* Wrapper fills exactly one screen — no more, no less */
   .marketing-map-wrapper {
-    height: 100dvh;        /* hard ceiling: exactly the viewport */
-    height: 100vh;         /* fallback for browsers without dvh */
-    min-height: unset;     /* override the desktop min-height */
-    overflow: hidden;      /* clip anything that would cause scroll */
+    height: 100dvh;
+    height: 100vh;
+    min-height: unset;
+    overflow: hidden;
     padding: 0.4rem 0.75rem 0.4rem 0.75rem;
     gap: 0.3rem;
     display: flex;
     flex-direction: column;
   }
-
-  /* ── Fixed-size children (don't grow or shrink) ── */
 
   .marketing-header {
     flex-shrink: 0;
@@ -321,8 +314,6 @@
     font-size: 1rem;
     line-height: 1.25;
     margin-bottom: 0.2rem;
-    word-break: keep-all;
-    hyphens: none;
   }
 
   .marketing-subtitle {
@@ -355,78 +346,45 @@
     width: 100%;
   }
 
-  .live-indicator {
-    font-size: 0.58rem;
-  }
+  .live-indicator { font-size: 0.58rem; }
+  .pulse-dot { width: 4px; height: 4px; }
+  .stat-text { text-align: right; }
+  .stat-number { font-size: 0.85rem; }
+  .stat-label { font-size: 0.52rem; }
 
-  .pulse-dot {
-    width: 4px;
-    height: 4px;
-  }
-
-  .stat-text {
-    text-align: right;
-  }
-
-  .stat-number {
-    font-size: 0.85rem;
-  }
-
-  .stat-label {
-    font-size: 0.52rem;
-  }
-
-  /* ── Map: the ONLY flex-grow element — eats all leftover space ── */
-  .map-container {
-    flex: 1 1 0;           /* grow AND shrink freely */
-    min-height: 0;         /* allow shrinking below any content size */
-    max-height: none;      /* remove the desktop 420px cap */
-    padding: 0;
-    margin: 0;
-    overflow: hidden;
-  }
-
-  /* ECharts div fills its container 100% */
-  #marketing-world-map {
-    width: 100%;
-    height: 100%;
-    min-height: 0;
-    max-height: none;
-  }
-
-  /* ── Footer: fixed size, hugs the bottom naturally ── */
   .marketing-footer {
     flex-shrink: 0;
-    margin: 0;             /* no margin-top: auto needed — flex does the work */
+    margin: 0;
     padding: 0.35rem 0.75rem 0.4rem 0.75rem;
-    border-bottom-left-radius: 0;   /* optional: flush with screen edge */
-    border-bottom-right-radius: 0;
   }
 
-  .footer-content {
-    gap: 0.3rem;
-  }
-
-  .footer-tagline {
-    font-size: 0.62rem;
-  }
-
-  .footer-contact {
-    font-size: 0.68rem;
-  }
+  .footer-content { gap: 0.3rem; }
+  .footer-tagline { font-size: 0.62rem; }
+  .footer-contact { font-size: 0.68rem; }
 
   .social-links {
     gap: 0.25rem;
     margin-top: 0.1rem;
   }
 
-  .social-link {
-    width: 26px;
-    height: 26px;
+  .social-link { width: 26px; height: 26px; }
+  .social-link svg { width: 13px; height: 13px; }
+
+  /* The ONLY flex-grow element — absorbs all leftover space */
+  .map-container {
+    flex: 1 1 0;
+    min-height: 0;      /* allows shrinking below intrinsic content size */
+    max-height: none;   /* cancel desktop 420px cap */
+    padding: 0;
+    margin: 0;
+    overflow: hidden;
   }
 
-  .social-link svg {
-    width: 13px;
-    height: 13px;
+  /* No pixel height — ResizeObserver + chart.resize() handles it */
+  #marketing-world-map {
+    width: 100%;
+    height: 100%;
+    min-height: 0;
+    max-height: none;
   }
 }
