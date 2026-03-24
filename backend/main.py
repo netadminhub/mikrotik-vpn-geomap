@@ -270,24 +270,16 @@ CORE_COUNTRIES = {
     "US": {"name": "United States", "is_core": True},
     "GB": {"name": "United Kingdom", "is_core": True},
     "DE": {"name": "Germany", "is_core": True},
-    "FR": {"name": "France", "is_core": True},
     "CA": {"name": "Canada", "is_core": True},
-    "JP": {"name": "Japan", "is_core": True},
-    "CN": {"name": "China", "is_core": True},
-    "KR": {"name": "South Korea", "is_core": True},
     "AE": {"name": "United Arab Emirates", "is_core": True},
-    "SA": {"name": "Saudi Arabia", "is_core": True},
     "TR": {"name": "Turkey", "is_core": True},
     "IT": {"name": "Italy", "is_core": True},
-    "ES": {"name": "Spain", "is_core": True},
+    "FR": {"name": "France", "is_core": True},
     "NL": {"name": "Netherlands", "is_core": True},
     "SE": {"name": "Sweden", "is_core": True},
-    "NO": {"name": "Norway", "is_core": True},
     "PL": {"name": "Poland", "is_core": True},
     "RU": {"name": "Russia", "is_core": True},
-    "BR": {"name": "Brazil", "is_core": True},
-    "MX": {"name": "Mexico", "is_core": True},
-    "AR": {"name": "Argentina", "is_core": True},
+    "AU": {"name": "Australia", "is_core": True},
 }
 
 # Pool of additional countries to randomly select from (focus regions)
@@ -295,7 +287,6 @@ CORE_COUNTRIES = {
 ADDITIONAL_COUNTRIES = {
     # Europe (heavy focus)
     "AT": {"name": "Austria"},
-    "BE": {"name": "Belgium"},
     "CH": {"name": "Switzerland"},
     "CZ": {"name": "Czech Republic"},
     "DK": {"name": "Denmark"},
@@ -309,50 +300,34 @@ ADDITIONAL_COUNTRIES = {
     "BG": {"name": "Bulgaria"},
     "HR": {"name": "Croatia"},
     "RS": {"name": "Serbia"},
-    "SK": {"name": "Slovakia"},
-    "SI": {"name": "Slovenia"},
-    "LT": {"name": "Lithuania"},
-    "LV": {"name": "Latvia"},
-    "EE": {"name": "Estonia"},
-    "IS": {"name": "Iceland"},
-    "LU": {"name": "Luxembourg"},
-    "MT": {"name": "Malta"},
-    "CY": {"name": "Cyprus"},
+    "NO": {"name": "Norway"},
+    "ES": {"name": "Spain"},
+    "BE": {"name": "Belgium"},
     # North America
     # Already have US, CA
-    # East Asia (heavy focus)
+    # East Asia
+    "JP": {"name": "Japan"},
+    "KR": {"name": "South Korea"},
     "TW": {"name": "Taiwan"},
     "HK": {"name": "Hong Kong"},
     "SG": {"name": "Singapore"},
-    "TH": {"name": "Thailand"},
-    "MY": {"name": "Malaysia"},
-    "VN": {"name": "Vietnam"},
-    "PH": {"name": "Philippines"},
-    "ID": {"name": "Indonesia"},
-    "IN": {"name": "India"},
-    "PK": {"name": "Pakistan"},
-    # Middle East (heavy focus)
+    # Middle East (focus)
+    "SA": {"name": "Saudi Arabia"},
     "QA": {"name": "Qatar"},
     "KW": {"name": "Kuwait"},
     "BH": {"name": "Bahrain"},
     "OM": {"name": "Oman"},
     "JO": {"name": "Jordan"},
-    "LB": {"name": "Lebanon"},
     "IQ": {"name": "Iraq"},
     "IL": {"name": "Israel"},  # Will be filtered out
     "EG": {"name": "Egypt"},
     # South America (partial)
-    "CL": {"name": "Chile"},
-    "CO": {"name": "Colombia"},
-    "PE": {"name": "Peru"},
-    "VE": {"name": "Venezuela"},
-    "UY": {"name": "Uruguay"},
+    "BR": {"name": "Brazil"},
+    "MX": {"name": "Mexico"},
+    "AR": {"name": "Argentina"},
     # Africa
     "ZA": {"name": "South Africa"},
-    "NG": {"name": "Nigeria"},
-    "KE": {"name": "Kenya"},
     # Oceania
-    "AU": {"name": "Australia"},
     "NZ": {"name": "New Zealand"},
 }
 
@@ -382,7 +357,7 @@ class MarketingMapState:
         self.last_update = datetime.utcnow()
     
     def get_data(self) -> MarketingMapData:
-        """Generate marketing map data with 40-65 countries"""
+        """Generate marketing map data with 20-35 countries (realistic believable number)"""
         now = datetime.utcnow()
         
         # Always include core countries
@@ -392,9 +367,9 @@ class MarketingMapState:
                 # Core countries stay with varying user counts
                 # Iran gets special treatment (dark gold)
                 if code == "IR":
-                    user_count = random.randint(15, 30)  # Moderate count, will be colored gold
+                    user_count = random.randint(8, 20)  # Moderate count, will be colored gold
                 else:
-                    user_count = random.randint(5, 25)
+                    user_count = random.randint(3, 12)
                 result_countries[code] = {
                     "name": info["name"],
                     "user_count": user_count,
@@ -402,10 +377,10 @@ class MarketingMapState:
                 }
         
         # Randomly add/remove additional countries for dynamic effect
-        # Target: 40-65 total countries
+        # Target: 20-35 total countries (more believable)
         current_count = len(result_countries) + len(self.active_countries)
-        target_min = 40
-        target_max = 65
+        target_min = 20
+        target_max = 35
         target_count = random.randint(target_min, target_max)
         
         # Remove some countries that have been active for a while (simulating user disconnect)
@@ -437,7 +412,7 @@ class MarketingMapState:
             for code in new_countries:
                 self.active_countries[code] = {
                     "added_at": now,
-                    "user_count": random.randint(3, 15)
+                    "user_count": random.randint(2, 8)
                 }
         
         # Merge active countries into result

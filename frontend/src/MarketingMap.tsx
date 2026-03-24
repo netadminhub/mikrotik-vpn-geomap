@@ -175,15 +175,15 @@ export default function MarketingMap() {
           // Custom styling for specific countries
           data: mapData.map((item: any) => {
             const baseItem = { ...item };
-            // Iran gets special dark gold color
+            // Iran gets special dark yellow color
             if (item.countryCode === 'IR') {
               baseItem.itemStyle = {
-                areaColor: '#B8860B', // Dark gold
+                areaColor: '#DAA520', // Dark goldenrod / dark yellow
                 borderColor: '#FFD700',
               };
               baseItem.emphasis = {
                 itemStyle: {
-                  areaColor: '#FFD700',
+                  areaColor: '#FFC125', // Golden yellow on hover
                   borderColor: '#FFF',
                 },
               };
@@ -213,35 +213,31 @@ export default function MarketingMap() {
   return (
     <div className="marketing-map-wrapper">
       <div className="marketing-header">
-        <h1>NetAdmin Plus - Global Coverage</h1>
+        <h1>NetAdmin Plus - Live Connection Map</h1>
         <p className="marketing-subtitle">
-          Secure access to Iranian services from anywhere in the world
+          Live: Iranians connected right now from {data?.total_countries || 0} countries
         </p>
         <p className="marketing-description">
-          Connect to Iran with a secure, stable IP address. Access banking, government services, and entertainment platforms without restrictions.
+          Real-time view of active connections. Users currently accessing Iranian banking, government services, and content from around the world.
         </p>
       </div>
       
-      <div className="features-grid">
-        <div className="feature-card">
-          <div className="feature-icon">🇮🇷</div>
-          <h3>Iranian IP Address</h3>
-          <p>Access geo-restricted Iranian services from anywhere in the world</p>
+      <div className="features-compact">
+        <div className="feature-item">
+          <span className="feature-emoji">🇮🇷</span>
+          <span>Iranian IP</span>
         </div>
-        <div className="feature-card">
-          <div className="feature-icon">🏦</div>
-          <h3>Banking & Finance</h3>
-          <p>Secure access to Iranian banking, payment systems, and financial services</p>
+        <div className="feature-item">
+          <span className="feature-emoji">🏦</span>
+          <span>Banking</span>
         </div>
-        <div className="feature-card">
-          <div className="feature-icon">🔒</div>
-          <h3>Secure & Stable</h3>
-          <p>Enterprise-grade encryption with reliable, high-speed connections</p>
+        <div className="feature-item">
+          <span className="feature-emoji">🔒</span>
+          <span>Secure</span>
         </div>
-        <div className="feature-card">
-          <div className="feature-icon">🎁</div>
-          <h3>Easy Payment</h3>
-          <p>Pay with crypto, PayPal, Wise, or Iranian Rials</p>
+        <div className="feature-item">
+          <span className="feature-emoji">💳</span>
+          <span>Crypto/PayPal</span>
         </div>
       </div>
 
@@ -249,27 +245,21 @@ export default function MarketingMap() {
         <div id="marketing-world-map" ref={mapRef}></div>
       </div>
 
-      <div className="stats-bar">
-        <div className="stat-item">
+      <div className="live-stats">
+        <div className="live-indicator">
+          <span className="pulse-dot"></span>
+          <span>LIVE</span>
+        </div>
+        <div className="stat-text">
           <span className="stat-number">{data?.total_countries || 0}</span>
-          <span className="stat-label">Countries Covered</span>
-        </div>
-        <div className="stat-divider"></div>
-        <div className="stat-item">
-          <span className="stat-number">24/7</span>
-          <span className="stat-label">Support</span>
-        </div>
-        <div className="stat-divider"></div>
-        <div className="stat-item">
-          <span className="stat-number">100%</span>
-          <span className="stat-label">Uptime</span>
+          <span className="stat-label">countries connected right now</span>
         </div>
       </div>
 
       <div className="marketing-footer">
         <div className="footer-content">
           <p className="footer-tagline">
-            Built between the pings with love by <span className="author">Ramtin</span>
+            Built between the pings with love by <a href="https://instagram.com/ramtiin.ir" target="_blank" rel="noopener noreferrer" className="author-link">Ramtin</a>
           </p>
           <p className="footer-contact">
             Order now: <a href="https://t.me/NetAdminPlus" target="_blank" rel="noopener noreferrer">@NetAdminPlus</a>
