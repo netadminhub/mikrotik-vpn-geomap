@@ -289,10 +289,12 @@
     gap: 0.5rem;
     min-height: auto;
     height: auto;
-    display: block;
+    display: flex;
+    flex-direction: column;
   }
 
   .marketing-header {
+    margin-top: 0;
     margin-bottom: 0;
   }
 
@@ -306,11 +308,13 @@
   .marketing-subtitle {
     font-size: 0.8rem;
     margin-top: 0.2rem;
+    margin-bottom: 0;
   }
 
   .features-compact {
     gap: 0.35rem;
-    margin-top: 0.25rem;
+    margin-top: 0;
+    margin-bottom: 0;
   }
 
   .feature-item {
@@ -325,6 +329,7 @@
   .map-container {
     padding: 0;
     margin-top: 0;
+    margin-bottom: 0;
     min-height: auto;
     max-height: auto;
     height: 200px;
@@ -342,6 +347,7 @@
     gap: 0;
     padding: 0.45rem 0.75rem;
     margin-top: 0;
+    margin-bottom: 0;
   }
 
   .live-indicator {
@@ -366,9 +372,9 @@
   }
 
   .marketing-footer {
-    padding: 0.4rem 0.75rem 0.1rem 0.75rem;
-    margin-top: 0;
-    margin-bottom: -0.3rem;
+    padding: 0.4rem 0.75rem 0.2rem 0.75rem;
+    margin-top: auto;
+    margin-bottom: 0;
   }
 
   .footer-content {
