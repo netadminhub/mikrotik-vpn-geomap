@@ -123,11 +123,10 @@ export default function MarketingMap() {
             return '';
           }
           
-          // Special message for Iran
+          // Special message for Iran - just heart emoji
           if (countryCode === 'IR') {
-            return `<div style="padding: 12px 16px;">
-              <div style="font-weight: bold; margin-bottom: 4px; font-size: 14px; color: #FFD700;">${countryName}</div>
-              <div style="color: #FFD700; font-size: 13px;">❤️ Active Users Connected</div>
+            return `<div style="padding: 12px 16px; text-align: center;">
+              <div style="font-size: 24px;">❤️</div>
             </div>`;
           }
           return `<div style="padding: 12px 16px;">
@@ -166,6 +165,7 @@ export default function MarketingMap() {
           label: {
             show: false,
           },
+          // Base style for all countries (non-active = dark gray)
           itemStyle: {
             areaColor: '#21262d',
             borderColor: '#30363d',
@@ -179,31 +179,24 @@ export default function MarketingMap() {
               areaColor: '#30363d',
             },
           },
-          // Custom styling for specific countries
+          // Country-specific data with colors
           data: mapData.map((item: any) => {
-            const baseItem = { 
-              ...item,
-              // Make sure Iran is ALWAYS yellow (not green)
-              itemStyle: item.countryCode === 'IR' ? {
-                areaColor: '#FFD700', // Yellow - always visible
-                borderColor: '#FFA500',
-              } : undefined,
-              emphasis: item.countryCode === 'IR' ? {
+            if (item.countryCode === 'IR') {
+              // Iran is ALWAYS yellow - never green
+              return {
+                ...item,
                 itemStyle: {
-                  areaColor: '#FFC125', // Golden yellow on hover
-                  borderColor: '#FFF',
+                  areaColor: '#FFD700', // Bright yellow - always
                 },
-                label: {
-                  show: true,
-                  color: '#FFF',
+                emphasis: {
+                  itemStyle: {
+                    areaColor: '#FFC125', // Golden on hover
+                  },
                 },
-              } : {
-                itemStyle: {
-                  areaColor: '#30363d',
-                },
-              },
-            };
-            return baseItem;
+              };
+            }
+            // Other countries: show green if has users, dark if not
+            return item;
           }),
         },
       ],
@@ -244,7 +237,7 @@ export default function MarketingMap() {
         </div>
         <div className="feature-item">
           <span className="feature-emoji">🏦</span>
-          <span>Banking</span>
+          <span>Banking & Services</span>
         </div>
         <div className="feature-item">
           <span className="feature-emoji">🔒</span>
@@ -252,7 +245,7 @@ export default function MarketingMap() {
         </div>
         <div className="feature-item">
           <span className="feature-emoji">💳</span>
-          <span>Crypto/PayPal</span>
+          <span>Toman/Crypto/PayPal</span>
         </div>
       </div>
 
