@@ -140,21 +140,7 @@ export default function MarketingMap() {
           color: '#f0f6fc',
         },
       },
-      visualMap: {
-        min: 0,
-        max: Math.max(...data.countries.map((c: CountryData) => c.user_count), 1),
-        left: 'left',
-        bottom: '20',
-        text: ['High', 'Low'],
-        calculable: false,
-        show: false, // Hide the legend for cleaner look
-        inRange: {
-          color: ['#1a4d2e', '#2d7d46', '#4a9f6d', '#6ec994', '#99f0c2'],
-        },
-        textStyle: {
-          color: '#8b949e',
-        },
-      },
+      // visualMap removed to prevent overriding Iran's yellow color
       series: [
         {
           name: 'Service Coverage',
@@ -165,20 +151,6 @@ export default function MarketingMap() {
           label: {
             show: false,
           },
-          // Base style for all countries (non-active = dark gray)
-          itemStyle: {
-            areaColor: '#21262d',
-            borderColor: '#30363d',
-          },
-          emphasis: {
-            label: {
-              show: true,
-              color: '#f0f6fc',
-            },
-            itemStyle: {
-              areaColor: '#30363d',
-            },
-          },
           // Country-specific data with colors
           data: mapData.map((item: any) => {
             if (item.countryCode === 'IR') {
@@ -187,6 +159,7 @@ export default function MarketingMap() {
                 ...item,
                 itemStyle: {
                   areaColor: '#FFD700', // Bright yellow - always
+                  borderColor: '#FFA500',
                 },
                 emphasis: {
                   itemStyle: {
@@ -194,9 +167,30 @@ export default function MarketingMap() {
                   },
                 },
               };
+            } else if (item.value && item.value > 0) {
+              // Countries with users: green
+              return {
+                ...item,
+                itemStyle: {
+                  areaColor: '#4a9f6d', // Green for active countries
+                  borderColor: '#30363d',
+                },
+                emphasis: {
+                  itemStyle: {
+                    areaColor: '#6ec994',
+                  },
+                },
+              };
+            } else {
+              // Countries without users: dark gray
+              return {
+                ...item,
+                itemStyle: {
+                  areaColor: '#21262d', // Dark gray
+                  borderColor: '#30363d',
+                },
+              };
             }
-            // Other countries: show green if has users, dark if not
-            return item;
           }),
         },
       ],
@@ -221,12 +215,9 @@ export default function MarketingMap() {
   return (
     <div className="marketing-map-wrapper">
       <div className="marketing-header">
-        <h1>NetAdmin Plus Abroad - Live Connection Map</h1>
+        <h1>NetAdmin Plus Abroad<br />Live Connection Map</h1>
         <p className="marketing-subtitle">
           Live: Iranians connected right now from {data?.total_countries || 0} countries
-        </p>
-        <p className="marketing-description">
-          Real-time view of active connections. Users currently accessing Iranian banking, government services, and content from around the world.
         </p>
       </div>
       
