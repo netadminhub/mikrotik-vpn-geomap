@@ -124,6 +124,33 @@
   text-align: center;
 }
 
+.marketing-link {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 0.75rem 1.25rem;
+  margin-bottom: 1.25rem;
+  background: linear-gradient(135deg, rgba(88, 166, 255, 0.1), rgba(163, 230, 53, 0.1));
+  border: 1px solid rgba(88, 166, 255, 0.3);
+  border-radius: 999px;
+  color: var(--text-primary);
+  font-size: 0.9rem;
+  font-weight: 500;
+  text-decoration: none;
+  transition: all 0.3s ease;
+}
+
+.marketing-link:hover {
+  background: linear-gradient(135deg, rgba(88, 166, 255, 0.15), rgba(163, 230, 53, 0.15));
+  border-color: rgba(88, 166, 255, 0.5);
+  transform: translateY(-2px);
+  box-shadow: 0 4px 16px rgba(88, 166, 255, 0.2);
+}
+
+.link-icon {
+  font-size: 1.1rem;
+}
+
 .tagline {
   color: var(--text-secondary);
   font-size: 0.8125rem;

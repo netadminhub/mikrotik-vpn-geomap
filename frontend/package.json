@@ -13,7 +13,8 @@
     "react-dom": "^18.2.0",
     "echarts": "^5.4.3",
     "echarts-simple-transform": "^1.0.0",
-    "react-echarts": "^0.0.1-security"
+    "react-echarts": "^0.0.1-security",
+    "react-router-dom": "^6.20.0"
   },
   "devDependencies": {
     "@types/react": "^18.2.43",

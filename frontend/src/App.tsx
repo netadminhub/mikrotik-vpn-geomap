@@ -1,7 +1,9 @@
 import { useState, useEffect } from 'react';
+import { BrowserRouter, Routes, Route } from 'react-router-dom';
 import LoginPage from './LoginPage';
 import WorldMap from './WorldMap';
 import ReportTable from './ReportTable';
+import MarketingMap from './MarketingMap';
 import './App.css';
 
 type Tab = 'map' | 'report';
@@ -12,8 +14,8 @@ interface Status {
   host: string | null;
 }
 
-function App() {
-  const [isAuthenticated, setIsAuthenticated] = useState(false);
+// Main dashboard for authenticated users
+function Dashboard({ onLogout }: { onLogout: () => void }) {
   const [activeTab, setActiveTab] = useState<Tab>('map');
   const [status, setStatus] = useState<Status | null>(null);
   const [reportPeriod, setReportPeriod] = useState<ReportPeriod>('daily');
@@ -21,20 +23,10 @@ function App() {
   const [endDate, setEndDate] = useState('');
 
   useEffect(() => {
-    // Check if user is already logged in
-    const token = localStorage.getItem('token');
-    if (token) {
-      setIsAuthenticated(true);
-    }
+    fetchStatus();
+    const interval = setInterval(fetchStatus, 30000);
+    return () => clearInterval(interval);
   }, []);
-
-  useEffect(() => {
-    if (isAuthenticated) {
-      fetchStatus();
-      const interval = setInterval(fetchStatus, 30000);
-      return () => clearInterval(interval);
-    }
-  }, [isAuthenticated]);
 
   const fetchStatus = async () => {
     try {
@@ -46,19 +38,6 @@ function App() {
     }
   };
 
-  const handleLogin = () => {
-    setIsAuthenticated(true);
-  };
-
-  const handleLogout = () => {
-    localStorage.removeItem('token');
-    setIsAuthenticated(false);
-  };
-
-  if (!isAuthenticated) {
-    return <LoginPage onLogin={handleLogin} />;
-  }
-
   return (
     <div className="app">
       <header className="header">
@@ -68,7 +47,7 @@ function App() {
             <span className={`status-dot ${status?.connected ? 'connected' : 'disconnected'}`}></span>
             <span>{status?.connected ? `Connected` : 'Disconnected'}</span>
           </div>
-          <button className="logout-button" onClick={handleLogout}>
+          <button className="logout-button" onClick={onLogout}>
             Logout
           </button>
         </div>
@@ -104,6 +83,60 @@ function App() {
         )}
       </main>
     </div>
+  );
+}
+
+function App() {
+  const [isAuthenticated, setIsAuthenticated] = useState(false);
+
+  useEffect(() => {
+    // Check if user is already logged in
+    const token = localStorage.getItem('token');
+    if (token) {
+      setIsAuthenticated(true);
+    }
+  }, []);
+
+  const handleLogin = () => {
+    setIsAuthenticated(true);
+  };
+
+  const handleLogout = () => {
+    localStorage.removeItem('token');
+    setIsAuthenticated(false);
+  };
+
+  return (
+    <BrowserRouter>
+      <Routes>
+        {/* Public marketing map */}
+        <Route path="/public-map" element={<MarketingMap />} />
+        
+        {/* Login page */}
+        <Route 
+          path="/login" 
+          element={
+            isAuthenticated ? (
+              <Dashboard onLogout={handleLogout} />
+            ) : (
+              <LoginPage onLogin={handleLogin} />
+            )
+          } 
+        />
+        
+        {/* Main app (protected) */}
+        <Route 
+          path="/" 
+          element={
+            isAuthenticated ? (
+              <Dashboard onLogout={handleLogout} />
+            ) : (
+              <LoginPage onLogin={handleLogin} />
+            )
+          } 
+        />
+      </Routes>
+    </BrowserRouter>
   );
 }
 

@@ -1,4 +1,5 @@
 import { useState } from 'react';
+import { Link } from 'react-router-dom';
 import './LoginPage.css';
 
 interface LoginPageProps {
@@ -26,7 +27,7 @@ export default function LoginPage({ onLogin }: LoginPageProps) {
       });
 
       const contentType = response.headers.get('content-type');
-      
+
       // Check if response is JSON
       if (!contentType || !contentType.includes('application/json')) {
         const text = await response.text();
@@ -97,6 +98,11 @@ export default function LoginPage({ onLogin }: LoginPageProps) {
           </form>
 
           <div className="login-footer">
+            <Link to="/public-map" className="marketing-link">
+              <span className="link-icon">🌐</span>
+              View Our Global Coverage Map
+            </Link>
+            
             <div className="tagline">
               Built between pings with ❤️ by{' '}
               <a href="https://linkedin.com/in/ramtin-rahmani" target="_blank" rel="noopener noreferrer">
