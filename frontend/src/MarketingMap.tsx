@@ -14,6 +14,20 @@ interface MarketingData {
   timestamp: string;
 }
 
+// Register world map
+let mapRegistered = false;
+async function registerWorldMap() {
+  if (mapRegistered) return;
+  try {
+    const response = await fetch('/world.json');
+    const worldMap = await response.json();
+    echarts.registerMap('world', worldMap);
+    mapRegistered = true;
+  } catch (error) {
+    console.error('Failed to load world map:', error);
+  }
+}
+
 export default function MarketingMap() {
   const mapRef = useRef<HTMLDivElement>(null);
   const [data, setData] = useState<MarketingData | null>(null);
@@ -22,7 +36,11 @@ export default function MarketingMap() {
   const chartInstance = useRef<echarts.ECharts | null>(null);
 
   useEffect(() => {
-    fetchData();
+    async function init() {
+      await registerWorldMap();
+      fetchData();
+    }
+    init();
     // Poll every 2 minutes for smooth updates (backend handles 2-hour session logic)
     const interval = setInterval(fetchData, 120000);
     return () => clearInterval(interval);
