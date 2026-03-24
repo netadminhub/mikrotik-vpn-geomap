@@ -120,12 +120,12 @@ export default function MarketingMap() {
           if (countryCode === 'IR') {
             return `<div style="padding: 12px 16px;">
               <div style="font-weight: bold; margin-bottom: 4px; font-size: 14px; color: #FFD700;">${countryName}</div>
-              <div style="color: #FFD700; font-size: 13px;">✦ Premium Service Hub</div>
+              <div style="color: #FFD700; font-size: 13px;">❤️ Active Users Connected</div>
             </div>`;
           }
           return `<div style="padding: 12px 16px;">
             <div style="font-weight: bold; margin-bottom: 4px; font-size: 14px;">${countryName}</div>
-            <div style="color: #58a6ff; font-size: 13px;">✓ Service Available</div>
+            <div style="color: #58a6ff; font-size: 13px;">✓ Users Connected Now</div>
           </div>`;
         },
         backgroundColor: '#161b22',
@@ -175,11 +175,11 @@ export default function MarketingMap() {
           // Custom styling for specific countries
           data: mapData.map((item: any) => {
             const baseItem = { ...item };
-            // Iran gets special dark yellow color
+            // Iran gets special yellow color (always yellow, not just on hover)
             if (item.countryCode === 'IR') {
               baseItem.itemStyle = {
-                areaColor: '#DAA520', // Dark goldenrod / dark yellow
-                borderColor: '#FFD700',
+                areaColor: '#FFD700', // Yellow - always visible
+                borderColor: '#FFA500',
               };
               baseItem.emphasis = {
                 itemStyle: {
@@ -259,7 +259,7 @@ export default function MarketingMap() {
       <div className="marketing-footer">
         <div className="footer-content">
           <p className="footer-tagline">
-            Built between the pings with love by <a href="https://instagram.com/ramtiin.ir" target="_blank" rel="noopener noreferrer" className="author-link">Ramtin</a>
+            Built between the pings with ❤️ by <a href="https://instagram.com/ramtiin.ir" target="_blank" rel="noopener noreferrer" className="author-link">Ramtin</a>
           </p>
           <p className="footer-contact">
             Order now: <a href="https://t.me/NetAdminPlus" target="_blank" rel="noopener noreferrer">@NetAdminPlus</a>
