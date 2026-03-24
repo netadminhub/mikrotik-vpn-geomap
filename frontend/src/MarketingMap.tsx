@@ -151,6 +151,19 @@ export default function MarketingMap() {
           label: {
             show: false,
           },
+          // Base style for ALL countries (including those not in data)
+          itemStyle: {
+            areaColor: '#21262d', // Dark gray for all countries by default
+            borderColor: '#30363d',
+          },
+          emphasis: {
+            label: {
+              show: false,
+            },
+            itemStyle: {
+              areaColor: '#30363d',
+            },
+          },
           // Country-specific data with colors
           data: mapData.map((item: any) => {
             if (item.countryCode === 'IR') {
@@ -167,7 +180,7 @@ export default function MarketingMap() {
                   },
                 },
               };
-            } else if (item.value && item.value > 0) {
+            } else {
               // Countries with users: green
               return {
                 ...item,
@@ -179,15 +192,6 @@ export default function MarketingMap() {
                   itemStyle: {
                     areaColor: '#6ec994',
                   },
-                },
-              };
-            } else {
-              // Countries without users: dark gray
-              return {
-                ...item,
-                itemStyle: {
-                  areaColor: '#21262d', // Dark gray
-                  borderColor: '#30363d',
                 },
               };
             }
