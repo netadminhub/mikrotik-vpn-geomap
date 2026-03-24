@@ -98,8 +98,8 @@ export default function MarketingMap() {
     const option = {
       backgroundColor: 'transparent',
       title: {
-        text: 'Global Service Coverage',
-        subtext: `Available in ${data.total_countries} Countries Worldwide`,
+        text: 'Active Users by Country',
+        subtext: `${data.total_countries} countries with users online now`,
         left: 'center',
         textStyle: {
           color: '#f0f6fc',
@@ -116,6 +116,13 @@ export default function MarketingMap() {
         formatter: (params: any) => {
           const countryName = params.name;
           const countryCode = params.data?.countryCode;
+          const hasUsers = params.value && params.value > 0;
+          
+          // Only show tooltip for countries with active users
+          if (!hasUsers) {
+            return '';
+          }
+          
           // Special message for Iran
           if (countryCode === 'IR') {
             return `<div style="padding: 12px 16px;">
@@ -174,20 +181,28 @@ export default function MarketingMap() {
           },
           // Custom styling for specific countries
           data: mapData.map((item: any) => {
-            const baseItem = { ...item };
-            // Iran gets special yellow color (always yellow, not just on hover)
-            if (item.countryCode === 'IR') {
-              baseItem.itemStyle = {
+            const baseItem = { 
+              ...item,
+              // Make sure Iran is ALWAYS yellow (not green)
+              itemStyle: item.countryCode === 'IR' ? {
                 areaColor: '#FFD700', // Yellow - always visible
                 borderColor: '#FFA500',
-              };
-              baseItem.emphasis = {
+              } : undefined,
+              emphasis: item.countryCode === 'IR' ? {
                 itemStyle: {
                   areaColor: '#FFC125', // Golden yellow on hover
                   borderColor: '#FFF',
                 },
-              };
-            }
+                label: {
+                  show: true,
+                  color: '#FFF',
+                },
+              } : {
+                itemStyle: {
+                  areaColor: '#30363d',
+                },
+              },
+            };
             return baseItem;
           }),
         },
@@ -213,7 +228,7 @@ export default function MarketingMap() {
   return (
     <div className="marketing-map-wrapper">
       <div className="marketing-header">
-        <h1>NetAdmin Plus - Live Connection Map</h1>
+        <h1>NetAdmin Plus Abroad - Live Connection Map</h1>
         <p className="marketing-subtitle">
           Live: Iranians connected right now from {data?.total_countries || 0} countries
         </p>
@@ -252,7 +267,7 @@ export default function MarketingMap() {
         </div>
         <div className="stat-text">
           <span className="stat-number">{data?.total_countries || 0}</span>
-          <span className="stat-label">countries connected right now</span>
+          <span className="stat-label">countries with active users</span>
         </div>
       </div>
 

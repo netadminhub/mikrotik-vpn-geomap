@@ -284,6 +284,7 @@ CORE_COUNTRIES = {
 
 # Pool of additional countries to randomly select from (focus regions)
 # Europe, North America, East Asia, Middle East, partial South America
+# Excluding microstates and obscure countries
 ADDITIONAL_COUNTRIES = {
     # Europe (heavy focus)
     "AT": {"name": "Austria"},
@@ -321,11 +322,11 @@ ADDITIONAL_COUNTRIES = {
     "IQ": {"name": "Iraq"},
     "IL": {"name": "Israel"},  # Will be filtered out
     "EG": {"name": "Egypt"},
-    # South America (partial)
+    # South America (partial - only major countries)
     "BR": {"name": "Brazil"},
     "MX": {"name": "Mexico"},
     "AR": {"name": "Argentina"},
-    # Africa
+    # Africa (only major)
     "ZA": {"name": "South Africa"},
     # Oceania
     "NZ": {"name": "New Zealand"},
